@@ -14,6 +14,7 @@ function togglePlay() {
 }
 
 function updateButton() {
+  // 'THIS' is bound to the video!!
   const icon = this.paused ? '►' : '❚ ❚';
   console.log(icon);
   toggle.textContent = icon;
@@ -24,6 +25,7 @@ function skip() {
 }
 
 function handleRangeUpdate() {
+  // set either playback for volume value
   video[this.name] = this.value;
 }
 

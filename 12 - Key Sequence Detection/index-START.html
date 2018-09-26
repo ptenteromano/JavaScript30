@@ -7,6 +7,22 @@
 </head>
 <body>
 <script>
+  const keyPressed = [];
+  const secretCode = 'bouss';
+  window.addEventListener('keyup', (e) => {
+    keyPressed.push(e.key);
+    
+    // IMPORTANT! maintain a window of 'secretCode' size, push out old ones, take on new ones.
+    keyPressed.splice(-secretCode.length - 1, keyPressed.length - secretCode.length);
+    
+    console.log(keyPressed);
+
+    if (keyPressed.join('').includes(secretCode)) {
+      alert("You did it!");
+      console.log("You did it!");
+      cornify_add();
+    }
+  });
 </script>
 </body>
 </html>
