@@ -4,11 +4,19 @@ const ctx = canvas.getContext('2d');
 const strip = document.querySelector('.strip');
 const snap = document.querySelector('.snap');
 
+// buttons
+const photoButton = document.querySelector('.takephoto');
+const redButton = document.querySelector('.redeffect');
+const splitButton = document.querySelector('.rgbsplit');
+const greenButton = document.querySelector('.greenscreen');
+
+// global filter variable
+let filter = 0;
+
 function getVideo() {
   // this returns a promise, needs .then
   navigator.mediaDevices.getUserMedia({ video: true, audio: false })
     .then(localMediaStream => {
-      console.log(localMediaStream);
       video.src = window.URL.createObjectURL(localMediaStream);
       video.play();
     })
@@ -23,20 +31,23 @@ function paintToCanvas() {
   canvas.width = width;
   canvas.height = height;
 
-  // return so you can manipulate the interval, if necessary
-  return setInterval(() => {
+  setInterval(() => {
+    // console.log("filter: " + filter);
     ctx.drawImage(video, 0, 0, width, height);
     // take pixels out
     let pixels = ctx.getImageData(0, 0, width, height);
     // mess with them
-    // pixels = redEffect(pixels);
-    // pixels = rgbSplit(pixels);
+    if (filter === 1)
+      pixels = redEffect(pixels);
+    else if (filter === 2)
+      pixels = rgbSplit(pixels);
     // ctx.globalAlpha = 0.7;
+    else if (filter === 3)
+      pixels = greenScreen(pixels);
 
     //put them back
     ctx.putImageData(pixels, 0, 0);
   }, 16);
-
 }
 
 // onClick is in the index.html <button> tag
@@ -75,19 +86,19 @@ function rgbSplit(pixels) {
   return pixels;
 }
 
-
+// play around with sliders while button is toggled
 function greenScreen(pixels) {
   const levels = {};
-
+  
   document.querySelectorAll('.rgb input').forEach((input) => {
     levels[input.name] = input.value;
   });
 
-  for (i = 0; i < pixels.data.length; i = i + 4) {
-    red = pixels.data[i + 0];
-    green = pixels.data[i + 1];
-    blue = pixels.data[i + 2];
-    alpha = pixels.data[i + 3];
+  for (let i = 0; i < pixels.data.length; i = i + 4) {
+    let red = pixels.data[i + 0];
+    let green = pixels.data[i + 1];
+    let blue = pixels.data[i + 2];
+    // let alpha = pixels.data[i + 3];
 
     if (red >= levels.rmin
       && green >= levels.gmin
@@ -104,5 +115,25 @@ function greenScreen(pixels) {
 }
 
 getVideo();
+
 video.addEventListener('canplay', paintToCanvas);
 
+photoButton.addEventListener('click', takePhoto);
+
+redButton.addEventListener('click', function () {
+  filter !== 1 ? filter = 1 : filter = 0;
+  greenButton.style['background-color'] = "initial";
+});
+
+splitButton.addEventListener('click', function () {
+  filter !== 2 ? filter = 2 : filter = 0;
+  greenButton.style['background-color'] = "initial";
+});
+
+greenButton.addEventListener('click', function () {
+  filter !== 3 ? filter = 3 : filter = 0;
+  if (filter === 3)
+    this.style['background-color'] = "green";
+  else
+    this.style['background-color'] = "initial";
+});
