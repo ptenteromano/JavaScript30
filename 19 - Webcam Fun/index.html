@@ -10,8 +10,15 @@
 <!-- webcam needs a secure server HTTPS, localserver is one  -->
   <div class="photobooth">
     <div class="controls">
-      <button onClick="takePhoto()">Take Photo</button>
+      <button class="takephoto" onClick="takePhoto()">Take Photo</button>
+      <button class="redeffect">Red Effect</button>
+      <button class="rgbsplit">RGB Split Effect</button>
+      
       <div class="rgb">
+        <button class="greenscreen">Toggle Sliders</button>
+        Play with the sliders while the button is green!
+        <br>
+
         <label for="rmin">Red Min:</label>
         <input type="range" min=0 max=255 name="rmin">
         <label for="rmax">Red Max:</label>
@@ -34,7 +41,7 @@
     </div>
 
     <canvas class="photo"></canvas>
-    <video class="player"></video>
+    <video class="player" autoplay="true" muted="muted"></video>
     <div class="strip"></div>
   </div>
 
